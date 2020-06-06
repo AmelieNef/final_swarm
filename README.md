@@ -3,7 +3,7 @@
 
 Repository with all files are listing to be report.
 
-
+To launch the process, you need to have all files in a the same folder. The aime function are present in PSO.py
 Items
 ------------
 ~~~~
