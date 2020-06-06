@@ -28,115 +28,115 @@ STOCHASTIC_1 = 0.965
 ---[[ This function is executed at each time step
      It must contain the logic of your controller ]]
 function step()
-		--Detection of floor color
-		color_floor_value = evaluation_couleur()
+	--Detection of floor color
+	color_floor_value = evaluation_couleur()
 
-		--Detection of room color
-		R_room, G_room, B_room , door = door_color()
-		R_robot, G_robot, B_robot = adapt_door_color(R_room, G_room, B_room,1)
+	--Detection of room color
+	R_room, G_room, B_room , door = door_color()
+	R_robot, G_robot, B_robot = adapt_door_color(R_room, G_room, B_room,1)
 
-		--Verification of the type of place which we are
-		if color_floor_value > 0  then
+	--Verification of the type of place which we are
+	if color_floor_value > 0  then
 
 
-			--Compute the number of object in the room
-			object_value, distance_object = comptage_objet()
-			object_normalize_value = (object_value - 2) / 10
+		--Compute the number of object in the room
+		object_value, distance_object = comptage_objet()
+		object_normalize_value = (object_value - 2) / 10
 
-			--Compute the room quality
-			quality_value =  (color_floor_value + object_normalize_value) /2
+		--Compute the room quality
+		quality_value =  (color_floor_value + object_normalize_value) /2
 
-			-- Check if an another robot will be at proximity and thinking this room is the best
-			distance, compteur = check_neighboor(R_robot, G_robot, B_robot, R_room, G_room, B_room)
+		-- Check if an another robot will be at proximity and thinking this room is the best
+		distance, compteur = check_neighboor(R_robot, G_robot, B_robot, R_room, G_room, B_room)
 
-			--Check if a robot make currently an advertize 
-			stop, new_R_robot, new_G_robot, new_B_robot = stop_aggregation_function(R_robot, G_robot, B_robot)
+		--Check if a robot make currently an advertize 
+		stop, new_R_robot, new_G_robot, new_B_robot = stop_aggregation_function(R_robot, G_robot, B_robot)
 
-			-- Comparison in between previous best quality value and actual quality value:
-			if PREVIOUS <= quality_value  and distance_object < DISTANCE_MAXIMAL_OBJECT_REBOOT and PREVIOUS ~= 0 then
+		-- Comparison in between previous best quality value and actual quality value:
+		if PREVIOUS <= quality_value  and distance_object < DISTANCE_MAXIMAL_OBJECT_REBOOT and PREVIOUS ~= 0 then
 
-				--When the robot enter in the room, he take the room color
-				if door < DISTANCE_MAXIMAL_DOOR then
-					robot.leds.set_all_colors(R_robot, G_robot, B_robot)
-					move()
+			--When the robot enter in the room, he take the room color
+			if door < DISTANCE_MAXIMAL_DOOR then
+				robot.leds.set_all_colors(R_robot, G_robot, B_robot)
+				move_robot()
 
-                --If an another robot thinking that it's the best room 
-				elseif PREVIOUS > 0 and distance < DISTANCE_MAXIMAL_ROBOT and  distance_object < DISTANCE_MAXIMAL_OBJECT_STAY and not stop then
-					robot.wheels.set_velocity(0,0)
+			--If an another robot thinking that it's the best room 
+			elseif PREVIOUS > 0 and distance < DISTANCE_MAXIMAL_ROBOT and  distance_object < DISTANCE_MAXIMAL_OBJECT_STAY and not stop then
+				robot.wheels.set_velocity(0,0)
 
-					limite = (compteur/1000)
-					if limite > 0.1 then
-						limite = 0.1
-					end
-
-					if (robot.random.uniform() > (STOCHASTIC_1 + limite)) then
-						choice = robot.random.uniform()
-						if choice < 0.25 then
-							robot.leds.set_all_colors(0,0,254)
-						elseif choice <0.5 then
-							robot.leds.set_all_colors(254,0,254)
-						elseif choice < 0.75 then
-							robot.leds.set_all_colors(254,0,0)
-						else
-							robot.leds.set_all_colors(254,139,0)
-						end
-					end
-
-                --If a robot make an advertise that is not the best room
-				elseif stop and  distance_object < DISTANCE_MAXIMAL_OBJECT_REBOOT and door > DISTANCE_MINIMAL_DOOR then
-					robot.leds.set_all_colors(new_R_robot, new_G_robot, new_B_robot)
-					move()
-
-				--If a robot are alone.
-				else
-					move()
+				limite = (compteur/1000)
+				if limite > 0.1 then
+					limite = 0.1
 				end
 
+				if (robot.random.uniform() > (STOCHASTIC_1 + limite)) then
+					choice = robot.random.uniform()
+					if choice < 0.25 then
+						robot.leds.set_all_colors(0,0,254)
+					elseif choice <0.5 then
+						robot.leds.set_all_colors(254,0,254)
+					elseif choice < 0.75 then
+						robot.leds.set_all_colors(254,0,0)
+					else
+						robot.leds.set_all_colors(254,139,0)
+					end
+				end
 
+			--If a robot make an advertise that is not the best room
+			elseif stop and  distance_object < DISTANCE_MAXIMAL_OBJECT_REBOOT and door > DISTANCE_MINIMAL_DOOR then
+				robot.leds.set_all_colors(new_R_robot, new_G_robot, new_B_robot)
+				move_robot()
+
+			--If a robot are alone.
 			else
-                --If the actual quality are more better than previous best quality value but the robot are too much far to the object
-				if PREVIOUS < quality_value then
-
-					--If the robot enter in the room
-					if enter then
-						robot.leds.set_all_colors(R_robot, G_robot, B_robot)
-					end
-
-					--Actualize PREVIOUS value when he go out the room
-					if before_out_room() then
-						--Actualisation de la valeur stockée
-						PREVIOUS = quality_value
-						R_ROOM_COLOR_PREVIOUS = R_room
-						G_ROOM_COLOR_PREVIOUS = G_room
-						B_ROOM_COLOR_PREVIOUS = B_room
-					end
-
-					--Poursuit son chemin
-					move()
-
-				--If the quality value of the room are more lower than PREVIOUS
-				else
-					if distance_object < DISTANCE_MAXIMAL_OBJECT_STAY then
-						--make sure to have a differente color than te room
-						make_sure_to_advertise(R_robot, G_robot, B_robot)
-					end
-
-					move()
-				end
+				move_robot()
 			end
+
 
 		else
-			-- Democratia term
-			color_R, color_G, color_B, vote  = best_room()
-			--If the majority are speak
-			if not enter then
-				new_R, new_G, new_B = adapt_door_color(color_R, color_G, color_B,1)
-				robot.leds.set_all_colors(new_R, new_G, new_B)
-				go_to_door(color_R, color_G, color_B)
-			end
-			move()
+			--If the actual quality are more better than previous best quality value but the robot are too much far to the object
+			if PREVIOUS < quality_value then
 
+				--If the robot enter in the room
+				if enter then
+					robot.leds.set_all_colors(R_robot, G_robot, B_robot)
+				end
+
+				--Actualize PREVIOUS value when he go out the room
+				if before_out_room() then
+					--Actualisation de la valeur stockée
+					PREVIOUS = quality_value
+					R_ROOM_COLOR_PREVIOUS = R_room
+					G_ROOM_COLOR_PREVIOUS = G_room
+					B_ROOM_COLOR_PREVIOUS = B_room
+				end
+
+				--Poursuit son chemin
+				move_robot()
+
+			--If the quality value of the room are more lower than PREVIOUS
+			else
+				if distance_object < DISTANCE_MAXIMAL_OBJECT_STAY then
+					--make sure to have a differente color than te room
+					make_sure_to_advertise(R_robot, G_robot, B_robot)
+				end
+
+				move_robot()
+			end
 		end
+
+	else
+		-- Democratia term
+		color_R, color_G, color_B, vote  = best_room()
+		--If the majority are speak
+		if not enter then
+			new_R, new_G, new_B = adapt_door_color(color_R, color_G, color_B,1)
+			robot.leds.set_all_colors(new_R, new_G, new_B)
+			go_to_door(color_R, color_G, color_B)
+		end
+		move_robot()
+
+	end
 end
 
 
