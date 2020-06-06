@@ -3,7 +3,11 @@
 
 Repository with all files are listing to be report.
 
-To launch the process, you need to have all files in a the same folder. The aime function are present in PSO.py
+Launch the process :
+-------------
+You need to have all files in a the same folder. The aim function are present in PSO.py, so you just need to execute this script.
+
+
 Items
 ------------
 ~~~~
