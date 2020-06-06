@@ -12,16 +12,20 @@ R_ROOM_COLOR_PREVIOUS = 128
 G_ROOM_COLOR_PREVIOUS = 249
 B_ROOM_COLOR_PREVIOUS = 255
 
+--paramètres optimisables non pris en compte
+DISTANCE_MAXIMAL_ROBOT = 50
+DISTANCE_MAXIMAL_OBJECT_STAY = 210
+DISTANCE_MAXIMAL_OBJECT_REBOOT = 300
+DISTANCE_MINIMAL_DOOR = 130
+DISTANCE_MAXIMAL_DOOR = 100
+MOVE_MINIMUM = 30
+STOCHASTIC_1 = 0.965
 
---[[ This function is executed every time you press the 'execute' button ]]
-function init()
-	robot.colored_blob_omnidirectional_camera.enable()
-	robot.leds.set_all_colors(128, 249, 255)
-end
+--paramètres optimisables pris en compte
+###PARAMETERS###
 
 
-
---[[ This function is executed at each time step
+---[[ This function is executed at each time step
      It must contain the logic of your controller ]]
 function step()
 		--Detection of floor color
@@ -49,15 +53,15 @@ function step()
 			stop, new_R_robot, new_G_robot, new_B_robot = stop_aggregation_function(R_robot, G_robot, B_robot)
 
 			-- Comparison in between previous best quality value and actual quality value:
-			if PREVIOUS <= quality_value  and distance_object < 300 and PREVIOUS ~= 0 then
+			if PREVIOUS <= quality_value  and distance_object < DISTANCE_MAXIMAL_OBJECT_REBOOT and PREVIOUS ~= 0 then
 
 				--When the robot enter in the room, he take the room color
-				if door < 100 then
+				if door < DISTANCE_MAXIMAL_DOOR then
 					robot.leds.set_all_colors(R_robot, G_robot, B_robot)
 					move()
 
-				--If an another robot thinking that it's the best room 
-				elseif PREVIOUS > 0 and distance < 50 and  distance_object < 210 and not stop then
+                --If an another robot thinking that it's the best room 
+				elseif PREVIOUS > 0 and distance < DISTANCE_MAXIMAL_ROBOT and  distance_object < DISTANCE_MAXIMAL_OBJECT_STAY and not stop then
 					robot.wheels.set_velocity(0,0)
 
 					limite = (compteur/1000)
@@ -65,7 +69,7 @@ function step()
 						limite = 0.1
 					end
 
-					if (robot.random.uniform() > (0.965 + limite)) then
+					if (robot.random.uniform() > (STOCHASTIC_1 + limite)) then
 						choice = robot.random.uniform()
 						if choice < 0.25 then
 							robot.leds.set_all_colors(0,0,254)
@@ -79,7 +83,7 @@ function step()
 					end
 
                 --If a robot make an advertise that is not the best room
-				elseif stop and  distance_object < 300 and door > 130 then
+				elseif stop and  distance_object < DISTANCE_MAXIMAL_OBJECT_REBOOT and door > DISTANCE_MINIMAL_DOOR then
 					robot.leds.set_all_colors(new_R_robot, new_G_robot, new_B_robot)
 					move()
 
@@ -90,7 +94,7 @@ function step()
 
 
 			else
-				--If the actual quality are more better than previous best quality value but the robot are too much far to the object
+                --If the actual quality are more better than previous best quality value but the robot are too much far to the object
 				if PREVIOUS < quality_value then
 
 					--If the robot enter in the room
@@ -100,17 +104,19 @@ function step()
 
 					--Actualize PREVIOUS value when he go out the room
 					if before_out_room() then
+						--Actualisation de la valeur stockée
 						PREVIOUS = quality_value
 						R_ROOM_COLOR_PREVIOUS = R_room
 						G_ROOM_COLOR_PREVIOUS = G_room
 						B_ROOM_COLOR_PREVIOUS = B_room
 					end
 
+					--Poursuit son chemin
 					move()
 
 				--If the quality value of the room are more lower than PREVIOUS
 				else
-					if distance_object < 210 then
+					if distance_object < DISTANCE_MAXIMAL_OBJECT_STAY then
 						--make sure to have a differente color than te room
 						make_sure_to_advertise(R_robot, G_robot, B_robot)
 					end
@@ -132,6 +138,7 @@ function step()
 
 		end
 end
+
 
 
 --When the robot enter in a room
