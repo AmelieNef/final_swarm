@@ -3,9 +3,14 @@
 
 Repository with all files are listing to be report.
 
-Launch the process :
+Launch the Lua process :
 -------------
-You need to have all files in a the same folder. The aim function are present in PSO.py, so you just need to execute this script.
+You need to have all files in a the same folder. 
+
+
+Launch the PSO process :
+-------------
+You need to have all files in a the same folder. The aim function are present in PSO.py, so you just need to execute this script after modify manually the initiaux parameters that you want to test (Actually they have the value found and explain in the report).
 
 
 Items
