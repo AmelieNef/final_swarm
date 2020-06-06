@@ -54,7 +54,7 @@ function step()
 				--When the robot enter in the room, he take the room color
 				if door < 100 then
 					robot.leds.set_all_colors(R_robot, G_robot, B_robot)
-					move()
+					move_robot()
 
 				--If an another robot thinking that it's the best room 
 				elseif PREVIOUS > 0 and distance < 50 and  distance_object < 210 and not stop then
@@ -81,11 +81,11 @@ function step()
                 --If a robot make an advertise that is not the best room
 				elseif stop and  distance_object < 300 and door > 130 then
 					robot.leds.set_all_colors(new_R_robot, new_G_robot, new_B_robot)
-					move()
+					move_robot()
 
 				--If a robot are alone.
 				else
-					move()
+					move_robot()
 				end
 
 
@@ -106,7 +106,7 @@ function step()
 						B_ROOM_COLOR_PREVIOUS = B_room
 					end
 
-					move()
+					move_robot()
 
 				--If the quality value of the room are more lower than PREVIOUS
 				else
@@ -115,7 +115,7 @@ function step()
 						make_sure_to_advertise(R_robot, G_robot, B_robot)
 					end
 
-					move()
+					move_robot()
 				end
 			end
 
@@ -128,7 +128,7 @@ function step()
 				robot.leds.set_all_colors(new_R, new_G, new_B)
 				go_to_door(color_R, color_G, color_B)
 			end
-			move()
+			move_robot()
 
 		end
 end
@@ -451,7 +451,7 @@ return value
 end
 
 --Move in the room
-function move()
+function move_robot()
 	number = robot.random.uniform_int(0,10)
 	ending = evitement(number)
 	if not ending then
