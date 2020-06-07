@@ -20,6 +20,7 @@ Items
 ------------
 ~~~~
 ├──PSO.py : files with all definitions contains in different originals files from the course on PSO optimisation.
+├──SWARM_PROJECT_REPORT.pdf: PDF of the script report for both part of the project.
 ├── Wilcoxon_test.csv : table of wilcoxon result for the tree part (cf report).
 ├──boxplot_particles.png: picture of boxplot produced during the determination of number of particles to choose for initial parameter.
 ├──boxplot_phi.png: picture of boxplot produced during the determination of value for both phi to choose for initials parameters.
