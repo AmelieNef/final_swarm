@@ -31,4 +31,5 @@ Items
 ├──passerelle.argos : reworked file of the robotics part to make PSO worked.
 ├──psoResults.csv: table of results from the 20 executions for each particles numbers.
 ├──psoVsManual.csv: table of results from the 20 executions to compare both method.
+├──pso_Best_combination_Results.csv: table of results from the 20 executions with all best initials paramaters.
 └──pso_solution_template.lua : reworked file of the robotics part
