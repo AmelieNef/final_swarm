@@ -19,9 +19,15 @@ You need to have all files in a the same folder. The aim function are present in
 Items
 ------------
 ~~~~
-├── interface.py : files with all definitions to make a bridge between the PSO algorithm, ARGOS file and Lua file. 
 ├──PSO.py : files with all definitions contains in different originals files from the course on PSO optimisation.
-├──passerelle.argos : reworked file of the robotics part to make PSO worked.
+├── Wilcoxon_test.csv : table of wilcoxon result for the tree part (cf report).
+├──boxplot_particles.png: picture of boxplot produced during the determination of number of particles to choose for initial parameter.
+├──boxplot_phi.png: picture of boxplot produced during the determination of value for both phi to choose for initials parameters.
+├──boxplot_psoVsManual.png: picture of boxplot produced during the analyse to determine if PSO parameters improve the initial program.
 ├── decision-making-modifie.argos : file to launch without visualisation Lua file.
-├──manual_solution.lua : original file of the robotics part
+├── interface.py : files with all definitions to make a bridge between the PSO algorithm, ARGOS file and Lua file. 
+├──manual_solution.lua : original file of the robotics part.
+├──passerelle.argos : reworked file of the robotics part to make PSO worked.
+├──psoResults.csv: table of results from the 20 executions for each particles numbers.
+├──psoVsManual.csv: table of results from the 20 executions to compare both method.
 └──pso_solution_template.lua : reworked file of the robotics part
